@@ -68,8 +68,11 @@ const HomePageContent = () => {
             setSavedPositionUsers(
               [...usersInformations, ...usersData].slice(0, maxLenghtUsers)
             );
-            setLoading(false);
-            setIsEndVisible(false);
+            setTimeout(() => {
+              setLoading(false);
+              setIsEndVisible(false); // simulate loading time
+            }, 250);
+            
           }
         );
       } else {
@@ -116,12 +119,12 @@ const HomePageContent = () => {
         background: colorsTheme.backgroundHeaderFooter,
       }}
     >
-      {(selectedNationalities && selectedNationalities.length > 0) || searchTerm !== "" && (
+      {(selectedNationalities && selectedNationalities.length > 0) || searchTerm !== "" ? (
         <Message
           nationalities={selectedNationalities}
           searchTerm={searchTerm}
         />
-      )}
+      ) : ''}
       {loading ? (
         <div className="content-wrapper">
           <LoadingRows />

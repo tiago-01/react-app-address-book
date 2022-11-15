@@ -49,8 +49,8 @@ const getUsersInformations = async ({
   let url = `https://randomuser.me/api?page=${page}&results=${pageSize}`;
   if (selectedNationalities.length > 0) {
     url += `&nat=`;
-    selectedNationalities.map((nationality, index) => {
-      if (index == 0) {
+    selectedNationalities.forEach((nationality, index) => {
+      if (index === 0) {
         url += nationality;
       } else {
         url += `,${nationality}`;
@@ -59,7 +59,7 @@ const getUsersInformations = async ({
   }
   const { data: response } = await axios.get(url);
   if (response && response.results && response.results.length > 0) {
-    response.results.map((user: UserResponseProps) => {
+    response.results.forEach((user: UserResponseProps) => {
       usersData.push({
         name: {
           first: user.name.first,
