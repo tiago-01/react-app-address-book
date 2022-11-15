@@ -20,7 +20,7 @@ const LoadingRows = () => {
 
 const HomePageContent = () => {
   const [openUserModal, setOpenUserModal] = useState(false);
-  const { colorsTheme, searchTerm, selectedNationalities } = useInfo();
+  const { colorsTheme, searchTerm, selectedNationalities, loadingNationalities } = useInfo();
   const [usersInformations, setUsersInformations] = useState<UserProps[]>([]);
   const [savedPositionUsers, setSavedPositionUsers] = useState<UserProps[]>([]);
   const [userSelected, setUserSelected] = useState<UserProps>({} as UserProps);
@@ -50,38 +50,35 @@ const HomePageContent = () => {
     }
   };
   useEffect(() => {
-    if (!loading && usersInformations.length == 0) {
+    if (!loading && usersInformations.length === 0) {
       setUsersNotFound(true)
     } else {
       setUsersNotFound(false)
     }
   }, [usersInformations, loading])
   useEffect(() => {
-    if (usersInformations.length < maxLenghtUsers) {
-      setIsMaxReached(false);
-      getUsersInformations({ page, pageSize, selectedNationalities }).then(
-        (usersData) => {
-          setUsersInformations(
-            [...usersInformations, ...usersData].slice(0, maxLenghtUsers)
-          );
-          setSavedPositionUsers(
-            [...usersInformations, ...usersData].slice(0, maxLenghtUsers)
-          );
-          if (isEndVisible) {
-            setIsEndVisible(false);
-            setLoading(false);
-          } else {
+    if (!loadingNationalities) {
+      if (usersInformations.length < maxLenghtUsers) {
+        setIsMaxReached(false);
+        getUsersInformations({ page, pageSize, selectedNationalities }).then(
+          (usersData) => {
+            setUsersInformations(
+              [...usersInformations, ...usersData].slice(0, maxLenghtUsers)
+            );
+            setSavedPositionUsers(
+              [...usersInformations, ...usersData].slice(0, maxLenghtUsers)
+            );
             setLoading(false);
             setIsEndVisible(false);
           }
-        }
-      );
-    } else {
-      setIsMaxReached(true);
-      setIsEndVisible(false);
-      setLoading(false);
+        );
+      } else {
+        setIsMaxReached(true);
+        setIsEndVisible(false);
+        setLoading(false);
+      }
     }
-  }, [page, selectedNationalities]);
+  }, [page, selectedNationalities, loadingNationalities]);
 
   useEffect(() => {
     if (searchTerm && searchTerm !== "") {
@@ -119,7 +116,7 @@ const HomePageContent = () => {
         background: colorsTheme.backgroundHeaderFooter,
       }}
     >
-      {(selectedNationalities && selectedNationalities.length > 0 || searchTerm !== "") && (
+      {(selectedNationalities && selectedNationalities.length > 0) || searchTerm !== "" && (
         <Message
           nationalities={selectedNationalities}
           searchTerm={searchTerm}

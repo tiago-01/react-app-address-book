@@ -20,6 +20,7 @@ export interface InfoContextData {
   changeSearchTerm: (value: string) => void;
   selectedNationalities: string[];
   changeSelectedNationalities: (value: string[]) => void;
+  loadingNationalities: boolean
 }
 interface InfoProviderProps {
   children: ReactNode;
@@ -60,6 +61,7 @@ export const InfoProvider = ({ children }: InfoProviderProps) => {
   const [selectedNationalities, setSelectedNationalities] = useState<string[]>(
     []
   );
+  const [loadingNationalities, setLoadingNationalities] = useState(true)
   const changeSelectedNationalities = (values: string[]) => {
     setSelectedNationalities(values);
     Cookies.set("selectedNationalities", values.toString());
@@ -87,12 +89,14 @@ export const InfoProvider = ({ children }: InfoProviderProps) => {
     setSearchTerm(value);
   };
   useEffect(() => {
+    setLoadingNationalities(true)
     const hasSelectedNationalitiesCookies = Cookies.get(
       "selectedNationalities"
     );
     if (hasSelectedNationalitiesCookies) {
       setSelectedNationalities(hasSelectedNationalitiesCookies.split(","));
     }
+    setLoadingNationalities(false)
   }, []);
   return (
     <InfoContext.Provider
@@ -104,6 +108,7 @@ export const InfoProvider = ({ children }: InfoProviderProps) => {
         searchTerm,
         changeSelectedNationalities,
         selectedNationalities,
+        loadingNationalities,
       }}
     >
       {children}
